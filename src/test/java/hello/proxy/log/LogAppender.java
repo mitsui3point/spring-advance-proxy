@@ -35,7 +35,8 @@ public class LogAppender {
     private void setLogAppenderInfo() {
         String className = this.getClass().getName();
         loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        if (className.contains("V1")) {
+        if (className.contains("V1") ||
+                className.contains("V2")) {
             logger = loggerContext.getLogger(this.getClass());
         }
         if (logger == null) {
