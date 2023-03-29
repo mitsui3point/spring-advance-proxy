@@ -7,6 +7,7 @@ import ch.qos.logback.core.read.ListAppender;
 import hello.proxy.pureproxy.decorator.code.DecoratorPatternClient;
 import hello.proxy.pureproxy.decorator.code.MessageDecorator;
 import hello.proxy.pureproxy.decorator.code.RealComponent;
+import hello.proxy.pureproxy.decorator.code.TimeDecorator;
 import hello.proxy.pureproxy.proxy.code.CacheProxy;
 import hello.proxy.pureproxy.proxy.code.RealSubject;
 import org.junit.jupiter.api.AfterEach;
@@ -48,6 +49,7 @@ public class LogAppenders {
             loggers.add(loggerContext.getLogger(RealComponent.class));
             loggers.add(loggerContext.getLogger(DecoratorPatternClient.class));
             loggers.add(loggerContext.getLogger(MessageDecorator.class));
+            loggers.add(loggerContext.getLogger(TimeDecorator.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
