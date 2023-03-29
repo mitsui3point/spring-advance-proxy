@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@SpringBootTest
 public class LogAppender {
 
     protected ListAppender<ILoggingEvent> listAppender;
@@ -41,9 +40,6 @@ public class LogAppender {
                 className.contains("V3")
         ) {
             logger = loggerContext.getLogger(this.getClass());
-        }
-        if (className.contains("Proxy")) {
-            logger = loggerContext.getLogger(RealSubject.class);
         }
         if (logger == null) {
             throw new IllegalArgumentException("LogAppender 에서 지원되지 않는 클래스입니다.");

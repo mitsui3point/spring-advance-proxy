@@ -9,7 +9,6 @@ import hello.proxy.pureproxy.proxy.code.RealSubject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@SpringBootTest
 public class LogAppenders {
 
     protected ListAppender<ILoggingEvent> listAppender;
