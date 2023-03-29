@@ -1,20 +1,17 @@
 package hello.proxy.app.v1;
 
-import hello.proxy.log.LogAppender;
-import org.assertj.core.api.Assertions;
+import hello.proxy.log.LogAppenders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.Duration;
 
 import static java.time.Duration.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 @SpringBootTest
-public class OrderServiceV1Test extends LogAppender {
+public class OrderServiceV1Test extends LogAppenders {
 
     @Autowired
     OrderServiceV1 service;

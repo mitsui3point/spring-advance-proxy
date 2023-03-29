@@ -1,6 +1,6 @@
 package hello.proxy.app.v1;
 
-import hello.proxy.log.LogAppender;
+import hello.proxy.log.LogAppenders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 @SpringBootTest
-public class OrderRepositoryV1Test extends LogAppender {
+public class OrderRepositoryV1Test extends LogAppenders {
 
     @Autowired
     private OrderRepositoryV1 repository;

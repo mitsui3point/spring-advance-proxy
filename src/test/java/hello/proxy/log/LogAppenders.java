@@ -41,6 +41,9 @@ public class LogAppenders {
         String className = this.getClass().getName();
         loggers = new ArrayList<>();
         loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        if (className.contains("V1") || className.contains("V2") || className.contains("V3")) {
+            loggers.add(loggerContext.getLogger(this.getClass()));
+        }
         if (className.contains("Proxy")) {
             loggers.add(loggerContext.getLogger(CacheProxy.class));
             loggers.add(loggerContext.getLogger(RealSubject.class));

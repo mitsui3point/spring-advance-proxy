@@ -1,7 +1,6 @@
 package hello.proxy.app.v3;
 
-import hello.proxy.app.v2.OrderServiceV2;
-import hello.proxy.log.LogAppender;
+import hello.proxy.log.LogAppenders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 @SpringBootTest
-public class OrderServiceV3Test extends LogAppender {
+public class OrderServiceV3Test extends LogAppenders {
 
     @Autowired
     OrderServiceV3 service;
