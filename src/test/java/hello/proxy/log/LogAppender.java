@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import hello.proxy.pureproxy.proxy.code.RealSubject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,12 @@ public class LogAppender {
         loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         if (className.contains("V1") ||
                 className.contains("V2") ||
-                className.contains("V3")) {
+                className.contains("V3")
+        ) {
             logger = loggerContext.getLogger(this.getClass());
+        }
+        if (className.contains("Proxy")) {
+            logger = loggerContext.getLogger(RealSubject.class);
         }
         if (logger == null) {
             throw new IllegalArgumentException("LogAppender 에서 지원되지 않는 클래스입니다.");
