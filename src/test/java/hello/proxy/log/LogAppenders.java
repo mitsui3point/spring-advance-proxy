@@ -4,6 +4,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import hello.proxy.pureproxy.decorator.code.DecoratorPatternClient;
+import hello.proxy.pureproxy.decorator.code.RealComponent;
 import hello.proxy.pureproxy.proxy.code.CacheProxy;
 import hello.proxy.pureproxy.proxy.code.RealSubject;
 import org.junit.jupiter.api.AfterEach;
@@ -41,8 +43,12 @@ public class LogAppenders {
             loggers.add(loggerContext.getLogger(CacheProxy.class));
             loggers.add(loggerContext.getLogger(RealSubject.class));
         }
+        if (className.contains("Decorator")) {
+            loggers.add(loggerContext.getLogger(RealComponent.class));
+            loggers.add(loggerContext.getLogger(DecoratorPatternClient.class));
+        }
         if (loggers.size() == 0) {
-            throw new IllegalArgumentException("LogAppender 에서 지원되지 않는 클래스입니다.");
+            throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
         }
         listAppender = new ListAppender<>();
     }
