@@ -26,8 +26,8 @@ public class OrderRepositoryV1Test extends LogAppenders {
                 repository.save("itemId"));
         //then
         assertThat(actual.elapsedTime()).isBetween(900L, 2000L);
-        assertThat(getContainsLog("OrderRepositoryV1.save()"));
-        assertThat(getContainsLog("OrderRepositoryV1.save() time="));
+        assertThat(getContainsLog("OrderRepositoryV1.save()")).isPresent();
+        assertThat(getContainsLog("OrderRepositoryV1.save() time=")).isPresent();
     }
 
     @Test
@@ -35,9 +35,9 @@ public class OrderRepositoryV1Test extends LogAppenders {
     void saveFailTest() {
         assertThatThrownBy(() -> repository.save("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThat(getContainsLog("OrderRepositoryV1.save()"));
-        assertThat(getContainsLog("OrderRepositoryV1.save() time="));
-        assertThat(getContainsLog("ms ex="));
+        assertThat(getContainsLog("OrderRepositoryV1.save()")).isPresent();
+        assertThat(getContainsLog("OrderRepositoryV1.save() time=")).isPresent();
+        assertThat(getContainsLog("ms ex=")).isPresent();
     }
 
     @RequiredArgsConstructor
