@@ -1,5 +1,6 @@
 package hello.proxy.app.v2;
 
+import hello.proxy.log.LogAppenders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OrderControllerV2Test {
+public class OrderControllerV2Test extends LogAppenders {
 
     public static final String REQ_URL = "/v2/request";
     public static final String NO_LOG_URL = "/v2/no-log";
@@ -32,6 +34,12 @@ public class OrderControllerV2Test {
         //then
         perform.andDo(print())
                 .andExpect(content().string("ok"));
+        assertThat(getContainsLog("OrderControllerV2.request()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV2.save()")).isPresent();
+        assertThat(getContainsLog("|   |-->OrderRepositoryV2.save()")).isPresent();
+        assertThat(getContainsLog("|   |<--OrderRepositoryV2.save() time=")).isPresent();
+        assertThat(getContainsLog("|<--OrderServiceV2.save() time=")).isPresent();
+        assertThat(getContainsLog("OrderControllerV2.request() time=")).isPresent();
     }
 
     @Test
@@ -43,6 +51,12 @@ public class OrderControllerV2Test {
             mvc.perform(get(REQ_URL)
                     .param("itemId", "ex"));
         }).hasCause(new IllegalArgumentException("예외 발생"));
+        assertThat(getContainsLog("OrderControllerV2.request()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV2.save()")).isPresent();
+        assertThat(getContainsLog("|   |-->OrderRepositoryV2.save()")).isPresent();
+        assertThat(getContainsLog("|   |<X-OrderRepositoryV2.save() time=")).isPresent();
+        assertThat(getContainsLog("|<X-OrderServiceV2.save() time=")).isPresent();
+        assertThat(getContainsLog("OrderControllerV2.request() time=")).isPresent();
     }
 
     @Test
