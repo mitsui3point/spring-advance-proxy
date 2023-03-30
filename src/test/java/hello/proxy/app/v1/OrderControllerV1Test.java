@@ -1,5 +1,6 @@
 package hello.proxy.app.v1;
 
+import hello.proxy.log.LogAppenders;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OrderControllerV1Test {
+public class OrderControllerV1Test extends LogAppenders {
 
     public static final String REQ_URL = "/v1/request";
     public static final String NO_LOG_URL = "/v1/no-log";
@@ -33,17 +34,29 @@ public class OrderControllerV1Test {
         //then
         perform.andDo(print())
                 .andExpect(content().string("ok"));
+        assertThat(getContainsLog("OrderControllerV1.request()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV1.save()")).isPresent();
+        assertThat(getContainsLog("|   |-->OrderRepositoryV1.save()")).isPresent();
+        assertThat(getContainsLog("|   |<--OrderRepositoryV1.save() time=")).isPresent();
+        assertThat(getContainsLog("|<--OrderServiceV1.save() time=")).isPresent();
+        assertThat(getContainsLog("OrderControllerV1.request() time=")).isPresent();
     }
 
     @Test
     @DisplayName("요청 API 를 호출을 실패한다.")
-    void requestFailTest() throws Exception {
-        //when
+    void requestFailTest() {
+        //then
         assertThatThrownBy(() -> {
-            //then
-            mvc.perform(get(REQ_URL)
+            //when
+            ResultActions perform = mvc.perform(get(REQ_URL)
                     .param("itemId", "ex"));
         }).hasCause(new IllegalArgumentException("예외 발생"));
+         assertThat(getContainsLog("OrderControllerV1.request()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV1.save()")).isPresent();
+        assertThat(getContainsLog("|   |-->OrderRepositoryV1.save()")).isPresent();
+        assertThat(getContainsLog("|   |<X-OrderRepositoryV1.save() time=")).isPresent();
+        assertThat(getContainsLog("|<X-OrderServiceV1.save() time=")).isPresent();
+        assertThat(getContainsLog("OrderControllerV1.request() time=")).isPresent();
     }
 
     @Test

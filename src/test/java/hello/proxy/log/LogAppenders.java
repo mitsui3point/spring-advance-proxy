@@ -4,12 +4,16 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import hello.proxy.config.v1_proxy.interface_proxy.OrderControllerInterfaceProxy;
+import hello.proxy.config.v1_proxy.interface_proxy.OrderRepositoryInterfaceProxy;
+import hello.proxy.config.v1_proxy.interface_proxy.OrderServiceInterfaceProxy;
 import hello.proxy.pureproxy.decorator.code.DecoratorPatternClient;
 import hello.proxy.pureproxy.decorator.code.MessageDecorator;
 import hello.proxy.pureproxy.decorator.code.RealComponent;
 import hello.proxy.pureproxy.decorator.code.TimeDecorator;
 import hello.proxy.pureproxy.proxy.code.CacheProxy;
 import hello.proxy.pureproxy.proxy.code.RealSubject;
+import hello.proxy.trace.logtrace.ThreadLocalLogTrace;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.LoggerFactory;
@@ -41,8 +45,11 @@ public class LogAppenders {
         String className = this.getClass().getName();
         loggers = new ArrayList<>();
         loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        if (className.contains("V1") || className.contains("V2") || className.contains("V3")) {
-            loggers.add(loggerContext.getLogger(this.getClass()));
+        loggers.add(loggerContext.getLogger(this.getClass()));
+        if (className.contains("V1") ||
+                className.contains("V2") ||
+                className.contains("V3")) {
+            loggers.add(loggerContext.getLogger(ThreadLocalLogTrace.class));
         }
         if (className.contains("Proxy")) {
             loggers.add(loggerContext.getLogger(CacheProxy.class));
