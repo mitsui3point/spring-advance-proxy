@@ -7,6 +7,7 @@ import ch.qos.logback.core.read.ListAppender;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderControllerInterfaceProxy;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderRepositoryInterfaceProxy;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderServiceInterfaceProxy;
+import hello.proxy.pureproxy.concreteproxy.code.ConcreteLogic;
 import hello.proxy.pureproxy.decorator.code.DecoratorPatternClient;
 import hello.proxy.pureproxy.decorator.code.MessageDecorator;
 import hello.proxy.pureproxy.decorator.code.RealComponent;
@@ -51,15 +52,18 @@ public class LogAppenders {
                 className.contains("V3")) {
             loggers.add(loggerContext.getLogger(ThreadLocalLogTrace.class));
         }
-        if (className.contains("Proxy")) {
+        if (className.contains("ProxyTest")) {
             loggers.add(loggerContext.getLogger(CacheProxy.class));
             loggers.add(loggerContext.getLogger(RealSubject.class));
         }
-        if (className.contains("Decorator")) {
+        if (className.contains("DecoratorTest")) {
             loggers.add(loggerContext.getLogger(RealComponent.class));
             loggers.add(loggerContext.getLogger(DecoratorPatternClient.class));
             loggers.add(loggerContext.getLogger(MessageDecorator.class));
             loggers.add(loggerContext.getLogger(TimeDecorator.class));
+        }
+        if (className.contains("ConcreteProxyTest")) {
+            loggers.add(loggerContext.getLogger(ConcreteLogic.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
