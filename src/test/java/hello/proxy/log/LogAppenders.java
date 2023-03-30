@@ -8,6 +8,7 @@ import hello.proxy.config.v1_proxy.interface_proxy.OrderControllerInterfaceProxy
 import hello.proxy.config.v1_proxy.interface_proxy.OrderRepositoryInterfaceProxy;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderServiceInterfaceProxy;
 import hello.proxy.pureproxy.concreteproxy.code.ConcreteLogic;
+import hello.proxy.pureproxy.concreteproxy.code.TimeProxy;
 import hello.proxy.pureproxy.decorator.code.DecoratorPatternClient;
 import hello.proxy.pureproxy.decorator.code.MessageDecorator;
 import hello.proxy.pureproxy.decorator.code.RealComponent;
@@ -64,6 +65,7 @@ public class LogAppenders {
         }
         if (className.contains("ConcreteProxyTest")) {
             loggers.add(loggerContext.getLogger(ConcreteLogic.class));
+            loggers.add(loggerContext.getLogger(TimeProxy.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
