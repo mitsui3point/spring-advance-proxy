@@ -7,7 +7,11 @@ import ch.qos.logback.core.read.ListAppender;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderControllerInterfaceProxy;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderRepositoryInterfaceProxy;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderServiceInterfaceProxy;
+import hello.proxy.jdkdynamic.JdkDynamicProxyTest;
 import hello.proxy.jdkdynamic.ReflectionTest;
+import hello.proxy.jdkdynamic.code.AImpl;
+import hello.proxy.jdkdynamic.code.BImpl;
+import hello.proxy.jdkdynamic.code.TimeInvocationHandler;
 import hello.proxy.pureproxy.concreteproxy.code.ConcreteLogic;
 import hello.proxy.pureproxy.concreteproxy.code.TimeProxy;
 import hello.proxy.pureproxy.decorator.code.DecoratorPatternClient;
@@ -70,6 +74,11 @@ public class LogAppenders {
         }
         if (className.contains("ReflectionTest")) {
             loggers.add(loggerContext.getLogger(ReflectionTest.class));
+        }
+        if (className.contains("JdkDynamicProxyTest")) {
+            loggers.add(loggerContext.getLogger(TimeInvocationHandler.class));
+            loggers.add(loggerContext.getLogger(AImpl.class));
+            loggers.add(loggerContext.getLogger(BImpl.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
