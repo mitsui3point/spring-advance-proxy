@@ -19,7 +19,7 @@ public class OrderServiceConcreteProxy extends OrderServiceV2 {
     public void orderItem(String itemId) {
         TraceStatus status = null;
         try {
-            status = trace.begin("OrderServiceV2.save()");
+            status = trace.begin("OrderServiceV2.orderItem()");
             target.orderItem(itemId);
             trace.end(status);
         } catch (Exception e) {

@@ -27,10 +27,10 @@ public class OrderServiceV2Test extends LogAppenders {
                 service.orderItem("itemId"));
         //then
         assertThat(actual.elapsedTime()).isBetween(900L, 2000L);
-        assertThat(getContainsLog("OrderServiceV2.save()")).isPresent();
+        assertThat(getContainsLog("OrderServiceV2.orderItem()")).isPresent();
         assertThat(getContainsLog("|-->OrderRepositoryV2.save()")).isPresent();
         assertThat(getContainsLog("|<--OrderRepositoryV2.save() time=")).isPresent();
-        assertThat(getContainsLog("OrderServiceV2.save() time=")).isPresent();
+        assertThat(getContainsLog("OrderServiceV2.orderItem() time=")).isPresent();
     }
 
     @Test
@@ -38,10 +38,10 @@ public class OrderServiceV2Test extends LogAppenders {
     void orderItemFailTest() {
         assertThatThrownBy(() -> service.orderItem("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThat(getContainsLog("OrderServiceV2.save()")).isPresent();
+        assertThat(getContainsLog("OrderServiceV2.orderItem()")).isPresent();
         assertThat(getContainsLog("|-->OrderRepositoryV2.save()")).isPresent();
         assertThat(getContainsLog("|<X-OrderRepositoryV2.save() time=")).isPresent();
-        assertThat(getContainsLog("OrderServiceV2.save() time=")).isPresent();
+        assertThat(getContainsLog("OrderServiceV2.orderItem() time=")).isPresent();
     }
 
     @RequiredArgsConstructor

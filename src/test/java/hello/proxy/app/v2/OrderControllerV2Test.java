@@ -35,10 +35,10 @@ public class OrderControllerV2Test extends LogAppenders {
         perform.andDo(print())
                 .andExpect(content().string("ok"));
         assertThat(getContainsLog("OrderControllerV2.request()")).isPresent();
-        assertThat(getContainsLog("|-->OrderServiceV2.save()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV2.orderItem()")).isPresent();
         assertThat(getContainsLog("|   |-->OrderRepositoryV2.save()")).isPresent();
         assertThat(getContainsLog("|   |<--OrderRepositoryV2.save() time=")).isPresent();
-        assertThat(getContainsLog("|<--OrderServiceV2.save() time=")).isPresent();
+        assertThat(getContainsLog("|<--OrderServiceV2.orderItem() time=")).isPresent();
         assertThat(getContainsLog("OrderControllerV2.request() time=")).isPresent();
     }
 
@@ -52,10 +52,10 @@ public class OrderControllerV2Test extends LogAppenders {
                     .param("itemId", "ex"));
         }).hasCause(new IllegalArgumentException("예외 발생"));
         assertThat(getContainsLog("OrderControllerV2.request()")).isPresent();
-        assertThat(getContainsLog("|-->OrderServiceV2.save()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV2.orderItem()")).isPresent();
         assertThat(getContainsLog("|   |-->OrderRepositoryV2.save()")).isPresent();
         assertThat(getContainsLog("|   |<X-OrderRepositoryV2.save() time=")).isPresent();
-        assertThat(getContainsLog("|<X-OrderServiceV2.save() time=")).isPresent();
+        assertThat(getContainsLog("|<X-OrderServiceV2.orderItem() time=")).isPresent();
         assertThat(getContainsLog("OrderControllerV2.request() time=")).isPresent();
     }
 
@@ -67,5 +67,6 @@ public class OrderControllerV2Test extends LogAppenders {
         //then
         perform.andDo(print())
                 .andExpect(content().string("ok"));
+        assertThat(getContainsLog("OrderControllerV2.noLog()")).isNotPresent();
     }
 }

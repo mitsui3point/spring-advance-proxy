@@ -35,10 +35,10 @@ public class OrderControllerV1Test extends LogAppenders {
         perform.andDo(print())
                 .andExpect(content().string("ok"));
         assertThat(getContainsLog("OrderControllerV1.request()")).isPresent();
-        assertThat(getContainsLog("|-->OrderServiceV1.save()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV1.orderItem()")).isPresent();
         assertThat(getContainsLog("|   |-->OrderRepositoryV1.save()")).isPresent();
         assertThat(getContainsLog("|   |<--OrderRepositoryV1.save() time=")).isPresent();
-        assertThat(getContainsLog("|<--OrderServiceV1.save() time=")).isPresent();
+        assertThat(getContainsLog("|<--OrderServiceV1.orderItem() time=")).isPresent();
         assertThat(getContainsLog("OrderControllerV1.request() time=")).isPresent();
     }
 
@@ -51,11 +51,11 @@ public class OrderControllerV1Test extends LogAppenders {
             ResultActions perform = mvc.perform(get(REQ_URL)
                     .param("itemId", "ex"));
         }).hasCause(new IllegalArgumentException("예외 발생"));
-         assertThat(getContainsLog("OrderControllerV1.request()")).isPresent();
-        assertThat(getContainsLog("|-->OrderServiceV1.save()")).isPresent();
+        assertThat(getContainsLog("OrderControllerV1.request()")).isPresent();
+        assertThat(getContainsLog("|-->OrderServiceV1.orderItem()")).isPresent();
         assertThat(getContainsLog("|   |-->OrderRepositoryV1.save()")).isPresent();
         assertThat(getContainsLog("|   |<X-OrderRepositoryV1.save() time=")).isPresent();
-        assertThat(getContainsLog("|<X-OrderServiceV1.save() time=")).isPresent();
+        assertThat(getContainsLog("|<X-OrderServiceV1.orderItem() time=")).isPresent();
         assertThat(getContainsLog("OrderControllerV1.request() time=")).isPresent();
     }
 
@@ -67,5 +67,6 @@ public class OrderControllerV1Test extends LogAppenders {
         //then
         perform.andDo(print())
                 .andExpect(content().string("ok"));
+        assertThat(getContainsLog("OrderControllerV1.noLog()")).isNotPresent();
     }
 }
