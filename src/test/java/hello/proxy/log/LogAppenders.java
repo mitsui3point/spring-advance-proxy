@@ -5,7 +5,9 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import hello.proxy.cglib.code.TimeMethodInterceptor;
+import hello.proxy.common.advice.TimeAdvice;
 import hello.proxy.common.service.ConcreteService;
+import hello.proxy.common.service.ServiceImpl;
 import hello.proxy.jdkdynamic.ReflectionTest;
 import hello.proxy.jdkdynamic.code.AImpl;
 import hello.proxy.jdkdynamic.code.BImpl;
@@ -81,6 +83,10 @@ public class LogAppenders {
         if (className.contains("CglibTest")) {
             loggers.add(loggerContext.getLogger(TimeMethodInterceptor.class));
             loggers.add(loggerContext.getLogger(ConcreteService.class));
+        }
+        if (className.contains("ProxyFactoryTest")) {
+            loggers.add(loggerContext.getLogger(TimeAdvice.class));
+            loggers.add(loggerContext.getLogger(ServiceImpl.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
