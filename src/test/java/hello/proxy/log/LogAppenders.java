@@ -4,10 +4,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import hello.proxy.config.v1_proxy.interface_proxy.OrderControllerInterfaceProxy;
-import hello.proxy.config.v1_proxy.interface_proxy.OrderRepositoryInterfaceProxy;
-import hello.proxy.config.v1_proxy.interface_proxy.OrderServiceInterfaceProxy;
-import hello.proxy.jdkdynamic.JdkDynamicProxyTest;
+import hello.proxy.cglib.code.TimeMethodInterceptor;
+import hello.proxy.common.service.ConcreteService;
 import hello.proxy.jdkdynamic.ReflectionTest;
 import hello.proxy.jdkdynamic.code.AImpl;
 import hello.proxy.jdkdynamic.code.BImpl;
@@ -79,6 +77,10 @@ public class LogAppenders {
             loggers.add(loggerContext.getLogger(TimeInvocationHandler.class));
             loggers.add(loggerContext.getLogger(AImpl.class));
             loggers.add(loggerContext.getLogger(BImpl.class));
+        }
+        if (className.contains("CglibTest")) {
+            loggers.add(loggerContext.getLogger(TimeMethodInterceptor.class));
+            loggers.add(loggerContext.getLogger(ConcreteService.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
