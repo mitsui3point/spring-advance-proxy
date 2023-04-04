@@ -12,6 +12,7 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 import java.lang.reflect.Method;
 
@@ -96,6 +97,40 @@ public class AdvisorTest extends LogAppenders {
         assertThat(getOrderedLogs().get(5)).contains("포인트컷 호출 method=find, targetClass=class hello.proxy.common.service.ServiceImpl");
         assertThat(getOrderedLogs().get(6)).contains("포인트컷 결과=false");
         assertThat(getOrderedLogs().get(7)).contains("find 호출");
+    }
+
+    /**
+     * 스프링이 제공하는 다양한 포인트컷
+     *  NameMatchMethodPointcut : 메서드 이름을 기반으로 매칭한다. 내부에서는 PatternMatchUtils 를 사용한다.
+     *  예) *xxx* 허용
+     *  JdkRegexpMethodPointcut : JDK 정규 표현식을 기반으로 포인트컷을 매칭한다.
+     *  TruePointcut : 항상 참을 반환한다.
+     *  AnnotationMatchingPointcut : 애노테이션으로 매칭한다.
+     *  AspectJExpressionPointcut : aspectJ 표현식으로 매칭한다.
+     *
+     * 가장 중요한 것은 aspectJ 표현식
+     *  여기에서 사실 다른 것은 중요하지 않다.
+     *  실무에서는 사용하기도 편리하고 기능도 가장 많은 aspectJ 표현식을 기반으로 사용하는 AspectJExpressionPointcut 을 사용하게 된다.
+     */
+    @Test
+    @DisplayName("스프링이 제공하는 포인트컷")
+    void advisorTest() {
+        ServiceInterface target = new ServiceImpl();
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();//스프링이 제공하는 포인트컷
+        pointcut.setMappedName("save");
+        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, new TimeAdvice());
+        proxyFactory.addAdvisor(advisor);
+        ServiceInterface proxy = (ServiceInterface) proxyFactory.getProxy();
+
+        proxy.save();
+        proxy.find();
+
+        assertThat(getOrderedLogs().get(0)).contains("TimeProxy 실행");
+        assertThat(getOrderedLogs().get(1)).contains("save 호출");
+        assertThat(getOrderedLogs().get(2)).contains("TimeProxy 종료 resultTime=");
+
+        assertThat(getOrderedLogs().get(3)).contains("find 호출");
     }
 
     /**
