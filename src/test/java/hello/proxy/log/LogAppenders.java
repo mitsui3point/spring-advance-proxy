@@ -89,6 +89,10 @@ public class LogAppenders {
             loggers.add(loggerContext.getLogger(ServiceImpl.class));
             loggers.add(loggerContext.getLogger(ConcreteService.class));
         }
+        if (className.contains("AdvisorTest")) {
+            loggers.add(loggerContext.getLogger(TimeAdvice.class));
+            loggers.add(loggerContext.getLogger(ServiceImpl.class));
+        }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
         }
