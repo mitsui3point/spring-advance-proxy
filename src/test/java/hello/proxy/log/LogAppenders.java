@@ -87,6 +87,7 @@ public class LogAppenders {
         if (className.contains("ProxyFactoryTest")) {
             loggers.add(loggerContext.getLogger(TimeAdvice.class));
             loggers.add(loggerContext.getLogger(ServiceImpl.class));
+            loggers.add(loggerContext.getLogger(ConcreteService.class));
         }
         if (loggers.size() == 0) {
             throw new IllegalArgumentException("LogAppenders 에서 지원되지 않는 클래스입니다.");
