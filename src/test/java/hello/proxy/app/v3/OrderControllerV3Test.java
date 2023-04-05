@@ -1,5 +1,7 @@
 package hello.proxy.app.v3;
 
+import hello.proxy.log.LogAppenders;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OrderControllerV3Test {
+public class OrderControllerV3Test extends LogAppenders {
 
     public static final String REQ_URL = "/v3/request";
     public static final String NO_LOG_URL = "/v3/no-log";
@@ -32,6 +35,13 @@ public class OrderControllerV3Test {
         //then
         perform.andDo(print())
                 .andExpect(content().string("ok"));
+
+        assertThat(getOrderedLogs().get(0)).contains("OrderControllerV3.request()");
+        assertThat(getOrderedLogs().get(1)).contains("|-->OrderServiceV3.orderItem()");
+        assertThat(getOrderedLogs().get(2)).contains("|   |-->OrderRepositoryV3.save()");
+        assertThat(getOrderedLogs().get(3)).contains("|   |<--OrderRepositoryV3.save() time=");
+        assertThat(getOrderedLogs().get(4)).contains("|<--OrderServiceV3.orderItem() time=");
+        assertThat(getOrderedLogs().get(5)).contains("OrderControllerV3.request() time=");
     }
 
     @Test
@@ -43,6 +53,13 @@ public class OrderControllerV3Test {
             mvc.perform(get(REQ_URL)
                     .param("itemId", "ex"));
         }).hasCause(new IllegalArgumentException("예외 발생"));
+
+        assertThat(getOrderedLogs().get(0)).contains("OrderControllerV3.request()");
+        assertThat(getOrderedLogs().get(1)).contains("|-->OrderServiceV3.orderItem()");
+        assertThat(getOrderedLogs().get(2)).contains("|   |-->OrderRepositoryV3.save()");
+        assertThat(getOrderedLogs().get(3)).contains("|   |<X-OrderRepositoryV3.save() time=");
+        assertThat(getOrderedLogs().get(4)).contains("|<X-OrderServiceV3.orderItem() time=");
+        assertThat(getOrderedLogs().get(5)).contains("OrderControllerV3.request() time=");
     }
 
     @Test

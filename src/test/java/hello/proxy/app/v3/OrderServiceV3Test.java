@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static java.time.Duration.ofMillis;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
@@ -21,6 +22,10 @@ public class OrderServiceV3Test extends LogAppenders {
     void orderItemTest() {
         assertTimeout(ofMillis(1200),
                 () -> service.orderItem("itemId"));
+        assertThat(getOrderedLogs().get(0)).contains("OrderServiceV3.orderItem()");
+        assertThat(getOrderedLogs().get(1)).contains("|-->OrderRepositoryV3.save()");
+        assertThat(getOrderedLogs().get(2)).contains("|<--OrderRepositoryV3.save() time=");
+        assertThat(getOrderedLogs().get(3)).contains("OrderServiceV3.orderItem() time=");
     }
 
     @Test
@@ -28,5 +33,9 @@ public class OrderServiceV3Test extends LogAppenders {
     void orderItemFailTest() {
         assertThatThrownBy(() -> service.orderItem("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
+        assertThat(getOrderedLogs().get(0)).contains("OrderServiceV3.orderItem()");
+        assertThat(getOrderedLogs().get(1)).contains("|-->OrderRepositoryV3.save()");
+        assertThat(getOrderedLogs().get(2)).contains("|<X-OrderRepositoryV3.save() time=");
+        assertThat(getOrderedLogs().get(3)).contains("OrderServiceV3.orderItem() time=");
     }
 }

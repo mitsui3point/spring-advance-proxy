@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static java.time.Duration.ofMillis;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
@@ -21,6 +22,8 @@ public class OrderRepositoryV3Test extends LogAppenders {
     void saveTest() {
         assertTimeout(ofMillis(1300),
                 () -> repository.save("itemId"));
+        assertThat(getOrderedLogs().get(0)).contains("OrderRepositoryV3.save()");
+        assertThat(getOrderedLogs().get(1)).contains("OrderRepositoryV3.save() time=");
     }
 
     @Test
@@ -28,5 +31,7 @@ public class OrderRepositoryV3Test extends LogAppenders {
     void saveFailTest() {
         assertThatThrownBy(() -> repository.save("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
+        assertThat(getOrderedLogs().get(0)).contains("OrderRepositoryV3.save()");
+        assertThat(getOrderedLogs().get(1)).contains("OrderRepositoryV3.save() time=");
     }
 }
