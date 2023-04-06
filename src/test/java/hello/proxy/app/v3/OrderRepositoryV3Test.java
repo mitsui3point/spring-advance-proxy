@@ -20,10 +20,11 @@ public class OrderRepositoryV3Test extends LogAppenders {
     @Test
     @DisplayName("주문한 상품을 1초 후에 저장한다.")
     void saveTest() {
-        assertTimeout(ofMillis(1300),
-                () -> repository.save("itemId"));
-        assertThat(getOrderedLogs().get(0)).contains("OrderRepositoryV3.save()");
-        assertThat(getOrderedLogs().get(1)).contains("OrderRepositoryV3.save() time=");
+        //when
+        ElapsedTimeChecker actual = new ElapsedTimeChecker(() -> repository.save("itemId"));
+        //then
+        assertThat(actual.elapsedTime()).isBetween(900L, 2000L);
+        assertSaveLog(3, false);
     }
 
     @Test
@@ -31,7 +32,6 @@ public class OrderRepositoryV3Test extends LogAppenders {
     void saveFailTest() {
         assertThatThrownBy(() -> repository.save("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThat(getOrderedLogs().get(0)).contains("OrderRepositoryV3.save()");
-        assertThat(getOrderedLogs().get(1)).contains("OrderRepositoryV3.save() time=");
+        assertSaveLog(3, true);
     }
 }

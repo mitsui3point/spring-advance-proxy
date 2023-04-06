@@ -1,7 +1,6 @@
 package hello.proxy.app.v3;
 
 import hello.proxy.log.LogAppenders;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +35,8 @@ public class OrderControllerV3Test extends LogAppenders {
         perform.andDo(print())
                 .andExpect(content().string("ok"));
 
-        assertThat(getOrderedLogs().get(0)).contains("OrderControllerV3.request()");
-        assertThat(getOrderedLogs().get(1)).contains("|-->OrderServiceV3.orderItem()");
-        assertThat(getOrderedLogs().get(2)).contains("|   |-->OrderRepositoryV3.save()");
-        assertThat(getOrderedLogs().get(3)).contains("|   |<--OrderRepositoryV3.save() time=");
-        assertThat(getOrderedLogs().get(4)).contains("|<--OrderServiceV3.orderItem() time=");
-        assertThat(getOrderedLogs().get(5)).contains("OrderControllerV3.request() time=");
+        assertRequestLog(3, false);
     }
-
     @Test
     @DisplayName("요청 API 를 호출을 실패한다.")
     void requestFailTest() throws Exception {
@@ -54,12 +47,7 @@ public class OrderControllerV3Test extends LogAppenders {
                     .param("itemId", "ex"));
         }).hasCause(new IllegalArgumentException("예외 발생"));
 
-        assertThat(getOrderedLogs().get(0)).contains("OrderControllerV3.request()");
-        assertThat(getOrderedLogs().get(1)).contains("|-->OrderServiceV3.orderItem()");
-        assertThat(getOrderedLogs().get(2)).contains("|   |-->OrderRepositoryV3.save()");
-        assertThat(getOrderedLogs().get(3)).contains("|   |<X-OrderRepositoryV3.save() time=");
-        assertThat(getOrderedLogs().get(4)).contains("|<X-OrderServiceV3.orderItem() time=");
-        assertThat(getOrderedLogs().get(5)).contains("OrderControllerV3.request() time=");
+        assertRequestLog(3, true);
     }
 
     @Test

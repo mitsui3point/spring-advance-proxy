@@ -21,6 +21,7 @@ import hello.proxy.pureproxy.decorator.code.TimeDecorator;
 import hello.proxy.pureproxy.proxy.code.CacheProxy;
 import hello.proxy.pureproxy.proxy.code.RealSubject;
 import hello.proxy.trace.logtrace.ThreadLocalLogTrace;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogAppenders {
 
@@ -128,5 +131,55 @@ public class LogAppenders {
                 .map(o -> o.toString())
                 .collect(Collectors.toList());
         return logs;
+    }
+
+    protected void assertRequestLog(int appVersion, boolean isThrownException) {
+        assertThat(getOrderedLogs().get(0)).contains("OrderControllerV"+appVersion).contains(".request");
+        assertThat(getOrderedLogs().get(1)).contains("|-->OrderServiceV"+appVersion).contains(".orderItem");
+        assertThat(getOrderedLogs().get(2)).contains("|   |-->OrderRepositoryV"+appVersion).contains(".save");
+        if (isThrownException) {
+            assertThat(getOrderedLogs().get(3)).contains("|   |<X-OrderRepositoryV"+appVersion).contains(".save").contains("time=").contains("ex=");
+            assertThat(getOrderedLogs().get(4)).contains("|<X-OrderServiceV"+appVersion).contains(".orderItem").contains("time=").contains("ex=");
+            assertThat(getOrderedLogs().get(5)).contains("OrderControllerV"+appVersion).contains(".request").contains("time=").contains("ex=");
+            return;
+        }
+        assertThat(getOrderedLogs().get(3)).contains("|   |<--OrderRepositoryV"+appVersion).contains(".save").contains("time=");
+        assertThat(getOrderedLogs().get(4)).contains("|<--OrderServiceV"+appVersion).contains(".orderItem").contains("time=");
+        assertThat(getOrderedLogs().get(5)).contains("OrderControllerV"+appVersion).contains(".request").contains("time=");
+    }
+
+    protected void assertOrderItemLog(int appVersion, boolean isThrownException) {
+        assertThat(getOrderedLogs().get(0)).contains("OrderServiceV"+appVersion).contains(".orderItem");
+        assertThat(getOrderedLogs().get(1)).contains("|-->OrderRepositoryV"+appVersion).contains(".save");
+        if (isThrownException) {
+            assertThat(getOrderedLogs().get(2)).contains("|<X-OrderRepositoryV"+appVersion).contains(".save").contains("time=").contains("ex=");
+            assertThat(getOrderedLogs().get(3)).contains("OrderServiceV"+appVersion).contains(".orderItem").contains("time=").contains("ex=");
+            return;
+        }
+        assertThat(getOrderedLogs().get(2)).contains("|<--OrderRepositoryV"+appVersion).contains(".save").contains("time=");
+        assertThat(getOrderedLogs().get(3)).contains("OrderServiceV"+appVersion).contains(".orderItem").contains("time=");
+    }
+
+    protected void assertSaveLog(int appVersion, boolean isThrownException) {
+        assertThat(getOrderedLogs().get(0)).contains("OrderRepositoryV"+appVersion).contains(".save");
+        if (isThrownException) {
+            assertThat(getOrderedLogs().get(1)).contains("OrderRepositoryV"+appVersion).contains(".save").contains("time=").contains("ex=");
+            return;
+        }
+        assertThat(getOrderedLogs().get(1)).contains("OrderRepositoryV"+appVersion).contains(".save").contains("time=");
+    }
+
+    @RequiredArgsConstructor
+    protected static class ElapsedTimeChecker {
+        private final Callback callback;
+        public long elapsedTime() {
+            long startTime = System.currentTimeMillis();
+            callback.call();
+            return System.currentTimeMillis() - startTime;
+        }
+    }
+
+    protected static interface Callback {
+        void call();
     }
 }

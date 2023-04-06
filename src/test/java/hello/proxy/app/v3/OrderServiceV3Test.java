@@ -20,12 +20,9 @@ public class OrderServiceV3Test extends LogAppenders {
     @Test
     @DisplayName("상품을 1초 후에 주문한다.")
     void orderItemTest() {
-        assertTimeout(ofMillis(1200),
-                () -> service.orderItem("itemId"));
-        assertThat(getOrderedLogs().get(0)).contains("OrderServiceV3.orderItem()");
-        assertThat(getOrderedLogs().get(1)).contains("|-->OrderRepositoryV3.save()");
-        assertThat(getOrderedLogs().get(2)).contains("|<--OrderRepositoryV3.save() time=");
-        assertThat(getOrderedLogs().get(3)).contains("OrderServiceV3.orderItem() time=");
+        ElapsedTimeChecker actual = new ElapsedTimeChecker(() -> service.orderItem("itemId"));
+        assertThat(actual.elapsedTime()).isBetween(900L, 2000L);
+        assertOrderItemLog(3, false);
     }
 
     @Test
@@ -33,9 +30,6 @@ public class OrderServiceV3Test extends LogAppenders {
     void orderItemFailTest() {
         assertThatThrownBy(() -> service.orderItem("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThat(getOrderedLogs().get(0)).contains("OrderServiceV3.orderItem()");
-        assertThat(getOrderedLogs().get(1)).contains("|-->OrderRepositoryV3.save()");
-        assertThat(getOrderedLogs().get(2)).contains("|<X-OrderRepositoryV3.save() time=");
-        assertThat(getOrderedLogs().get(3)).contains("OrderServiceV3.orderItem() time=");
+        assertOrderItemLog(3, true);
     }
 }

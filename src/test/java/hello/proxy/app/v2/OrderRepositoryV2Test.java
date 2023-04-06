@@ -20,12 +20,10 @@ public class OrderRepositoryV2Test extends LogAppenders {
     @DisplayName("주문한 상품을 1초 후에 저장한다.")
     void saveTest() {
         //when
-        ElapsedTimeChecker actual = new ElapsedTimeChecker(() ->
-                repository.save("itemId"));
+        ElapsedTimeChecker actual = new ElapsedTimeChecker(() -> repository.save("itemId"));
         //then
         assertThat(actual.elapsedTime()).isBetween(900L, 2000L);
-        assertThat(getContainsLog("OrderRepositoryV2.save()")).isPresent();
-        assertThat(getContainsLog("OrderRepositoryV2.save() time=")).isPresent();
+        assertSaveLog(2, false);
     }
 
     @Test
@@ -33,22 +31,6 @@ public class OrderRepositoryV2Test extends LogAppenders {
     void saveFailTest() {
         assertThatThrownBy(() -> repository.save("ex"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThat(getContainsLog("OrderRepositoryV2.save()")).isPresent();
-        assertThat(getContainsLog("OrderRepositoryV2.save() time=")).isPresent();
-        assertThat(getContainsLog("ms ex=")).isPresent();
-    }
-
-    @RequiredArgsConstructor
-    static class ElapsedTimeChecker {
-        private final Callback callback;
-        long elapsedTime() {
-            long startTime = System.currentTimeMillis();
-            callback.call();
-            return System.currentTimeMillis() - startTime;
-        }
-    }
-
-    static interface Callback {
-        void call();
+        assertSaveLog(2, true);
     }
 }
